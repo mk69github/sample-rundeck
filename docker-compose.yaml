@@ -13,9 +13,6 @@ services:
       - RUNDECK_GRAILS_URL
     volumes:
       - ${RUNDECK_LICENSE_FILE:-/dev/null}:/home/rundeck/etc/rundeckpro-license.key
-      - ./data/rundeck/projects/:/home/rundeck/projects/
-      - ./data/rundeck/scripts:/home/rundeck/scripts/
-      - ./data/rundeck/.ssh:/home/rundeck/.ssh/
     ports:
       - 7000:4440
     links:
@@ -48,42 +45,6 @@ services:
       - MYSQL_PASSWORD
     volumes:
       - ./data/db:/var/lib/mysql
-    networks:
-      rundeck_network:
-
-  command:
-    container_name: command
-    build:
-      context: ../app/context/command
-    volumes:
-      - ../app/command:/usr/local/command
-    ports:
-      - 10022:22
-    command: /bin/sh -c "sudo /etc/init.d/sshd restart && tail -f /dev/null"
-    networks:
-      rundeck_network:
-
-  job:
-    container_name: job
-    build:
-      context: ../app/context/command
-    volumes:
-      - ../app/command:/usr/local/command
-    ports:
-      - 10023:22
-    command: /bin/sh -c "sudo /etc/init.d/sshd restart && tail -f /dev/null"
-    networks:
-      rundeck_network:
-
-  worker:
-    container_name: worker
-    build:
-      context: ../app/context/command
-    volumes:
-      - ../app/command:/usr/local/command
-    ports:
-      - 10024:22
-    command: /bin/sh -c "sudo /etc/init.d/sshd restart && tail -f /dev/null"
     networks:
       rundeck_network:
 
